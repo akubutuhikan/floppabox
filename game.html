@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floppa Game!</title>
+    <link rel="icon" href="floppa.png" type="image/png"> <!-- Using floppa.png as favicon -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f0f0f0;
+        }
+        #target {
+            width: 100px;
+            height: 100px;
+            background-image: url('caracal.png'); /* Using caracal.png as the target image */
+            background-size: cover;
+            position: absolute;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        #score {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        #saveButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Floppa Game!</h1>
+    <p>Click the moving Floppa to earn points!</p>
+    <div id="target"></div>
+    <p id="score">Score: 0</p>
+    <button id="saveButton">Save</button>
+
+    <script>
+        const target = document.getElementById('target');
+        const scoreDisplay = document.getElementById('score');
+        const saveButton = document.getElementById('saveButton');
+        let score = 0;
+
+        // Load saved data if it exists
+        function loadData() {
+            const savedScore = localStorage.getItem('score');
+            const savedPosition = localStorage.getItem('position');
+
+            if (savedScore) {
+                score = parseInt(savedScore);
+                scoreDisplay.innerText = 'Score: ' + score;
+
+                if (savedPosition) {
+                    const position = JSON.parse(savedPosition);
+                    target.style.left = position.x + 'px';
+                    target.style.top = position.y + 'px';
+                }
+            }
+        }
+
+        function moveTarget() {
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 100);
+            target.style.left = x + 'px';
+            target.style.top = y + 'px';
+        }
+
+        function saveData() {
+            localStorage.setItem('score', score);
+            const position = {
+                x: parseInt(target.style.left),
+                y: parseInt(target.style.top)
+            };
+            localStorage.setItem('position', JSON.stringify(position));
+            alert("Game Saved!"); // Message when saving
+        }
+
+        target.onclick = function() {
+            score++;
+            scoreDisplay.innerText = 'Score: ' + score;
+            moveTarget();
+        };
+
+        saveButton.onclick = function() {
+            saveData();
+        };
+
+        // Move target for the first time
+        moveTarget();
+        loadData(); // Load saved data on start
+    </script>
+
+</body>
+</html>
